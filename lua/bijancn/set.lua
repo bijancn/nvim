@@ -31,7 +31,7 @@ vim.opt.updatetime = 50 -- how often to update in ms
 
 vim.opt.colorcolumn = "80"
 
--- vim.opt.clipboard = "unnamed"
+vim.opt.clipboard = "unnamed"
 
 -- Splits
 vim.opt.splitbelow = true
