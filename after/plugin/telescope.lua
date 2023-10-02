@@ -2,7 +2,10 @@
 -- See `:help telescope` and `:help telescope.setup()`
 
 -- Add projects.nvim extension
-require("project_nvim").setup({})
+require("project_nvim").setup {
+    detection_methods = { "pattern", "lsp" },
+    patterns = { "!bijancn", ".git" }
+}
 require("telescope").load_extension("projects")
 vim.keymap.set("n", "<leader>pp", function()
     require("telescope").extensions.projects.projects({})
