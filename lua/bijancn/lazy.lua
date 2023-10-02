@@ -65,6 +65,8 @@ require("lazy").setup({
     -- Additional lua configuration, makes nvim stuff amazing!
     "folke/neodev.nvim",
 
+    { "zbirenbaum/copilot.lua" },
+
     { "numtostr/BufOnly.nvim" },
 
     {
