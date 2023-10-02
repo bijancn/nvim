@@ -4,6 +4,15 @@ vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", ':e <c-r>=expand("%:p:h")<cr>/<cr>')
 -- Open new buffer with directory of current file via line
 vim.keymap.set("n", "<leader>be", ':e <c-r>=expand("%:p:h")<cr>/')
+vim.keymap.set("n", "<C-[>", ':bprevious<CR>', { desc = "Next buffer" })
+vim.keymap.set("n", "<C-]>", ':bnext<CR>')
+vim.keymap.set("n", "<C-w>h", ':vsplit<CR>')
+
+-- Easy window navigation
+vim.keymap.set("n", "<C-h>", "<C-w>h")
+vim.keymap.set("n", "<C-j>", "<C-w>j")
+vim.keymap.set("n", "<C-k>", "<C-w>k")
+vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- Move lines around when selected visually
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -38,12 +47,12 @@ vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
--- Substitute word you are currently on
-vim.keymap.set("n", "<leader>ss", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>suw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+    { desc = 'Substitute word you are currently on' })
 
 -- Make current file executable
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 vim.keymap.set("n", "<leader>oi", function()
-	vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
+    vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
 end)

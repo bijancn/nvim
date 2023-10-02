@@ -42,7 +42,6 @@ require("lazy").setup({
     { "hrsh7th/cmp-nvim-lsp" },
     { "hrsh7th/nvim-cmp" },
     { "L3MON4D3/LuaSnip" },
-    { "navarasu/onedark.nvim" },   -- Theme inspired by Atom
     { "ahmedkhalf/project.nvim" }, -- Project manager
     -- file tree
     { "nvim-tree/nvim-tree.lua",          dependencies = { "nvim-tree/nvim-web-devicons" } },
@@ -65,6 +64,26 @@ require("lazy").setup({
 
     -- Additional lua configuration, makes nvim stuff amazing!
     "folke/neodev.nvim",
+
+    { "numtostr/BufOnly.nvim" },
+
+    {
+        "folke/tokyonight.nvim",
+        lazy = false,
+        priority = 1000,
+        opts = {},
+    },
+    { "navarasu/onedark.nvim" }, -- Theme inspired by Atom
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 300
+        end,
+        opts = {
+        }
+    }
 }, {
     install = {
         -- install missing plugins on startup. This doesn't increase startup time.
