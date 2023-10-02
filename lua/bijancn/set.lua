@@ -1,7 +1,3 @@
--- disable netrw at the very start of your init.lua for nvim-tree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- Line numbers
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -31,7 +27,7 @@ vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
-vim.opt.updatetime = 50     -- how often to update in ms
+vim.opt.updatetime = 50 -- how often to update in ms
 
 vim.opt.colorcolumn = "80"
 
@@ -40,4 +36,3 @@ vim.opt.colorcolumn = "80"
 -- Splits
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-

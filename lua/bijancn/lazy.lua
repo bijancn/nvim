@@ -26,6 +26,7 @@ require("lazy").setup({
     { "rose-pine/neovim",  name = "rose-pine" },
     { "mbbill/undotree" },
     { "tpope/vim-fugitive" },
+    { "tpope/vim-rhubarb" },
     {
         -- Highlight, edit, and navigate code
         'nvim-treesitter/nvim-treesitter',
