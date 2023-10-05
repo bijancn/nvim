@@ -1,18 +1,19 @@
 vim.g.mapleader = " "
 
 -- Open new buffer with directory of current file via file manager
-vim.keymap.set("n", "<leader>pv", ':e <c-r>=expand("%:p:h")<cr>/<cr>')
--- Open new buffer with directory of current file via line
-vim.keymap.set("n", "<leader>be", ':e <c-r>=expand("%:p:h")<cr>/')
-vim.keymap.set("n", "<C-[>", ':bprevious<CR>', { desc = "Next buffer" })
-vim.keymap.set("n", "<C-]>", ':bnext<CR>')
-vim.keymap.set("n", "<C-w>h", ':vsplit<CR>')
+vim.keymap.set("n", "<leader>pv", ':e <c-r>=expand("%:p:h")<cr>/<cr>',
+    { desc = "Open new buffer with directory of current file via file manager" })
+vim.keymap.set("n", "<leader>be", ':e <c-r>=expand("%:p:h")<cr>/',
+    { desc = "Open new buffer with directory of current file via line" })
+vim.keymap.set("n", "<M-j>", ':bprevious<CR>', { desc = "Previous buffer" })
+vim.keymap.set("n", "<M-k>", ':bnext<CR>', { desc = "Next buffer" })
+vim.keymap.set("n", "<C-w>h", ':vsplit<CR>', { desc = "Split window horizontally" })
 
 -- Easy window navigation
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-j>", "<C-w>j")
-vim.keymap.set("n", "<C-k>", "<C-w>k")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to window below" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to window above" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
 -- Move lines around when selected visually
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -42,8 +43,8 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
 
 -- Quickfix list shortcuts
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
+-- vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
+-- vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 

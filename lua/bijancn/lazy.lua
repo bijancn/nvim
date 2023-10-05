@@ -23,8 +23,18 @@ require("lazy").setup({
             end,
         }, },
     },
-    { "rose-pine/neovim",  name = "rose-pine" },
+    { "rose-pine/neovim", name = "rose-pine" },
     { "mbbill/undotree" },
+    {
+        "NeogitOrg/neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim",         -- required
+            "nvim-telescope/telescope.nvim", -- optional
+            "sindrets/diffview.nvim",        -- optional
+            "ibhagwan/fzf-lua",              -- optional
+        },
+        config = true
+    },
     { "tpope/vim-fugitive" },
     { "tpope/vim-rhubarb" },
     {
@@ -61,10 +71,18 @@ require("lazy").setup({
         dependencies = "nvim-tree/nvim-web-devicons",
     },
     -- Show indentation guide lines
-    { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+    { "lukas-reineke/indent-blankline.nvim", main = "ibl",                               opts = {} },
 
     -- Additional lua configuration, makes nvim stuff amazing!
     "folke/neodev.nvim",
+
+    {
+        "folke/zen-mode.nvim",
+        opts = {
+            window = { width = 150 }
+        }
+    },
+    { "folke/twilight.nvim",                 opts = { context = 10, treesitter = false } },
 
     { "zbirenbaum/copilot.lua" },
 
