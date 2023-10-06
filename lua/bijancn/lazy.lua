@@ -13,6 +13,30 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
     {
+        "nvim-neotest/neotest",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "antoinemadec/FixCursorHold.nvim",
+            'haydenmeade/neotest-jest',
+        },
+        config = function()
+            require('neotest').setup({
+                adapters = {
+                    require('neotest-jest')({
+                        jestCommand = "npm test --",
+                        -- jestConfigFile = "custom.jest.config.ts",
+                        env = { CI = true },
+                        cwd = function(path)
+                            return vim.fn.getcwd()
+                        end,
+                    }),
+                }
+            })
+        end
+    },
+    { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' },
+    {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.3",
         dependencies = { "nvim-lua/plenary.nvim", {
@@ -23,7 +47,7 @@ require("lazy").setup({
             end,
         }, },
     },
-    { "rose-pine/neovim", name = "rose-pine" },
+    { "rose-pine/neovim",      name = "rose-pine" },
     { "mbbill/undotree" },
     {
         "NeogitOrg/neogit",
@@ -34,6 +58,27 @@ require("lazy").setup({
             "ibhagwan/fzf-lua",              -- optional
         },
         config = true
+    },
+    {
+        "tpope/vim-projectionist",
+        config = function()
+            vim.g.projectionist_heuristics = {
+                ["*"] = {
+                    ["src/main/java/*.java"] = {
+                        alternate = "src/test/java/{}test.java",
+                    },
+                    ["src/test/java/*test.java"] = {
+                        alternate = "src/main/java/{}.java",
+                    },
+                    ["*.ts"] = {
+                        alternate = "{}.spec.ts",
+                    },
+                    ["*.spec.ts"] = {
+                        alternate = "{}.ts",
+                    },
+                },
+            }
+        end,
     },
     { "tpope/vim-fugitive" },
     { "tpope/vim-rhubarb" },
@@ -60,7 +105,6 @@ require("lazy").setup({
     { "lewis6991/gitsigns.nvim" },
     { "jose-elias-alvarez/null-ls.nvim" }, -- Allows to use eslint as formatter
     { "stevearc/dressing.nvim" },          -- Makes something prettier?
-    { "numToStr/Comment.nvim" },           -- commenter
     -- Review LSP errors and similar in popup window
     { "folke/trouble.nvim",               dependencies = { "nvim-tree/nvim-web-devicons" } },
     { "nvim-lualine/lualine.nvim" }, -- bottom statusline
@@ -71,7 +115,7 @@ require("lazy").setup({
         dependencies = "nvim-tree/nvim-web-devicons",
     },
     -- Show indentation guide lines
-    { "lukas-reineke/indent-blankline.nvim", main = "ibl",                               opts = {} },
+    { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 
     -- Additional lua configuration, makes nvim stuff amazing!
     "folke/neodev.nvim",
@@ -82,17 +126,37 @@ require("lazy").setup({
             window = { width = 150 }
         }
     },
-    { "folke/twilight.nvim",                 opts = { context = 10, treesitter = false } },
 
     { "zbirenbaum/copilot.lua" },
 
+    { "numToStr/Comment.nvim" },
+
     { "numtostr/BufOnly.nvim" },
+
+    { "numToStr/FTerm.nvim" },
 
     {
         "folke/tokyonight.nvim",
         lazy = false,
         priority = 1000,
         opts = {},
+    },
+    {
+        'kristijanhusak/vim-dadbod-ui',
+        dependencies = {
+            { 'tpope/vim-dadbod',                     lazy = true },
+            { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true },
+        },
+        cmd = {
+            'DBUI',
+            'DBUIToggle',
+            'DBUIAddConnection',
+            'DBUIFindBuffer',
+        },
+        init = function()
+            -- Your DBUI configuration
+            vim.g.db_ui_use_nerd_fonts = 1
+        end,
     },
     { "navarasu/onedark.nvim" }, -- Theme inspired by Atom
     {

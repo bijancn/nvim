@@ -10,8 +10,8 @@ require("nvim-tree").setup({
 })
 
 -- Change working directory to current file
-vim.keymap.set("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
+vim.keymap.set("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>", { desc = "Change working directory to current file" })
 -- Move working directory one level higher
-vim.keymap.set("n", "<leader>..", ":cd ..<CR>:pwd<CR>")
+vim.keymap.set("n", "<leader>..", ":cd ..<CR>:pwd<CR>", { desc = "Move working directory one level higher" })
 
-vim.keymap.set("n", "<leader>t", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>tr", vim.cmd.NvimTreeToggle, { desc = "Toggle [T]ree" })

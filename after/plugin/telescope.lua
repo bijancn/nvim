@@ -1,6 +1,3 @@
--- [[ Configure Telescope ]]
--- See `:help telescope` and `:help telescope.setup()`
-
 -- Add projects.nvim extension
 require("project_nvim").setup {
     detection_methods = { "pattern", "lsp" },
@@ -12,22 +9,21 @@ vim.keymap.set("n", "<leader>pp", function()
 end)
 
 require('telescope').setup {
-    defaults = {
-        mappings = {
-            i = {
-                ['<C-u>'] = false,
-                ['<C-d>'] = false,
-            },
-        },
-    },
+    -- defaults = {
+    --     mappings = {
+    --         i = {
+    --             ['<C-u>'] = false,
+    --             ['<C-d>'] = false,
+    --         },
+    --     },
+    -- },
 }
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
--- See `:help telescope.builtin`
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+vim.keymap.set('n', '<leader>?', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
     require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
         winblend = 10,

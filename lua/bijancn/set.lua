@@ -9,7 +9,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
-vim.opt.wrap = false
+vim.opt.wrap = true
 
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -36,3 +36,10 @@ vim.opt.clipboard = "unnamed"
 -- Splits
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+
+-- Not yet released
+-- vim.opt.foldtext = 'v:lua.vim.treesitter.foldtext()'
+-- vim.opt.fillchars = { fold = " " }
+vim.opt.foldmethod = "indent"
+vim.opt.foldenable = false
+vim.opt.foldlevel = 99

@@ -1,4 +1,6 @@
-require('neodev').setup()
+require('neodev').setup({
+    library = { plugins = { "neotest" }, types = true },
+})
 
 local lsp = require('lsp-zero')
 
@@ -19,18 +21,36 @@ end)
 
 require('mason').setup({})
 
+local function organize_imports()
+    local params = {
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+        title = ""
+    }
+    vim.lsp.buf.execute_command(params)
+end
+
 local servers = {
     -- clangd = {},
     -- gopls = {},
     -- pyright = {},
     -- rust_analyzer = {},
-    -- tsserver = {},
+    tsserver = {
+        commands = {
+            OrganizeImports = {
+                organize_imports,
+                description = "Organize Imports"
+            }
+        }
+    },
     -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
     lua_ls = {
-        Lua = {
-            workspace = { checkThirdParty = false },
-            telemetry = { enable = false },
+        settings = {
+            Lua = {
+                workspace = { checkThirdParty = false },
+                telemetry = { enable = false },
+            }
         },
     },
 }
@@ -85,8 +105,9 @@ mason_lspconfig.setup_handlers {
         require('lspconfig')[server_name].setup {
             capabilities = capabilities,
             on_attach = on_attach,
-            settings = servers[server_name],
+            settings = (servers[server_name] or {}).settings,
             filetypes = (servers[server_name] or {}).filetypes,
+            commands = (servers[server_name] or {}).commands,
         }
     end
 }
