@@ -40,6 +40,10 @@ vim.opt.splitright = true
 -- Not yet released
 -- vim.opt.foldtext = 'v:lua.vim.treesitter.foldtext()'
 -- vim.opt.fillchars = { fold = " " }
-vim.opt.foldmethod = "indent"
+vim.opt.foldmethod = "expr"
 vim.opt.foldenable = false
 vim.opt.foldlevel = 99
+
+-- set foldexpr=nvim_treesitter#foldexpr()
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"

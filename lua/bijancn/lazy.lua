@@ -24,7 +24,7 @@ require("lazy").setup({
             require('neotest').setup({
                 adapters = {
                     require('neotest-jest')({
-                        jestCommand = "npm test --",
+                        jestCommand = "npm run test -- --silent=false",
                         -- jestConfigFile = "custom.jest.config.ts",
                         env = { CI = true },
                         cwd = function(path)
@@ -82,6 +82,7 @@ require("lazy").setup({
     },
     { "tpope/vim-fugitive" },
     { "tpope/vim-rhubarb" },
+    { "kristijanhusak/vim-create-pr" },
     {
         -- Highlight, edit, and navigate code
         'nvim-treesitter/nvim-treesitter',
@@ -128,6 +129,8 @@ require("lazy").setup({
     },
 
     { "zbirenbaum/copilot.lua" },
+
+    { "AndrewRadev/linediff.vim" },
 
     { "numToStr/Comment.nvim" },
 
