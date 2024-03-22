@@ -47,7 +47,6 @@ require("lazy").setup({
             end,
         }, },
     },
-    { "rose-pine/neovim",      name = "rose-pine" },
     { "mbbill/undotree" },
     {
         "NeogitOrg/neogit",
@@ -124,11 +123,29 @@ require("lazy").setup({
     {
         "folke/zen-mode.nvim",
         opts = {
-            window = { width = 150 }
+            window = { width = 100 }
         }
     },
 
-    { "zbirenbaum/copilot.lua" },
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        lazy = true,
+        config = function()
+            require("copilot").setup({
+                filetypes = {
+                    yaml = true,
+                    markdown = false,
+                    norg = false,
+                    help = false,
+                    gitcommit = true,
+                    gitrebase = true,
+                    ["."] = false,
+                }
+            })
+        end,
+    },
 
     { "AndrewRadev/linediff.vim" },
 
@@ -162,6 +179,21 @@ require("lazy").setup({
         end,
     },
     { "navarasu/onedark.nvim" }, -- Theme inspired by Atom
+    { "rose-pine/neovim",     name = "rose-pine" },
+    {
+        "f-person/auto-dark-mode.nvim",
+        config = {
+            update_interval = 1000,
+            set_dark_mode = function()
+                vim.api.nvim_set_option("background", "dark")
+                vim.cmd("colorscheme onedark")
+            end,
+            set_light_mode = function()
+                vim.api.nvim_set_option("background", "light")
+                vim.cmd("colorscheme onedark")
+            end,
+        },
+    },
     {
         "folke/which-key.nvim",
         event = "VeryLazy",
@@ -171,7 +203,332 @@ require("lazy").setup({
         end,
         opts = {
         }
+    },
+    {
+        'nvim-orgmode/orgmode',
+        dependencies = {
+            { 'nvim-treesitter/nvim-treesitter', lazy = true },
+            { 'akinsho/org-bullets.nvim',        lazy = true },
+            -- {
+            --     "lukas-reineke/headlines.nvim",
+            --     config = true, -- or `opts = {}`
+            -- },
+        },
+        event = 'VeryLazy',
+        config = function()
+            -- Load treesitter grammar for org
+            require('orgmode').setup_ts_grammar()
+
+            -- Setup treesitter
+            require('nvim-treesitter.configs').setup({
+                highlight = {
+                    enable = true,
+                    additional_vim_regex_highlighting = { 'org' },
+                },
+                ensure_installed = { 'org' },
+            })
+
+            -- Setup orgmode
+            require('orgmode').setup({
+                org_agenda_files = '~/orgfiles/**/*',
+                org_default_notes_file = '~/orgfiles/refile.org',
+                org_log_done = false,
+                org_todo_keywords = { 'TODO(t)', 'WAITING(w)', '|', 'DONE(d)', 'WONTDO(o)' },
+                org_todo_keyword_faces = {
+                    WAITING = ':foreground #4285F4 :slant italic',
+                },
+                org_blank_before_new_entry = { heading = false, plain_list_item = false },
+                org_agenda_skip_scheduled_if_done = true,
+                org_agenda_skip_deadline_if_done = true,
+                mappings = {
+                    capture = {
+                        org_capture_finalize = '<Leader>w',
+                        org_capture_refile = 'R',
+                        org_capture_kill = 'Q'
+                    }
+                }
+            })
+
+            -- require("headlines").setup {
+            --     org = {
+            --         query = vim.treesitter.query.parse(
+            --             "org",
+            --             [[
+            --     (headline (stars) @headline)
+            --
+            --     (
+            --         (expr) @dash
+            --         (#match? @dash "^-----+$")
+            --     )
+            --
+            --     (block
+            --         name: (expr) @_name
+            --         (#eq? @_name "SRC")
+            --     ) @codeblock
+            --
+            --     (paragraph . (expr) @quote
+            --         (#eq? @quote ">")
+            --     )
+            -- ]]
+            --         ),
+            --         headline_highlights = {},
+            --         codeblock_highlight = "CodeBlock",
+            --         dash_highlight = "Dash",
+            --         dash_string = "-",
+            --         quote_highlight = "Quote",
+            --         quote_string = "┃",
+            --         fat_headlines = false,
+            --         fat_headline_upper_string = "▃",
+            --         fat_headline_lower_string = "🬂",
+            --     },
+            -- }
+
+            require('org-bullets').setup {
+                concealcursor = true, -- If false then when the cursor is on a line underlying characters are visible
+                symbols = {
+                    list = "•",
+                    headlines = { "▲", "►", "▼", "◄" },
+                    checkboxes = {
+                        half = { "", "OrgTSCheckboxHalfChecked" },
+                        done = { "✓", "OrgDone" },
+                        todo = { "˟", "OrgTODO" },
+                    },
+                }
+            }
+        end,
+    },
+    {
+        "rebelot/kanagawa.nvim", -- neorg needs a colorscheme with treesitter support
+        {
+            "nvim-treesitter/nvim-treesitter",
+            build = ":TSUpdate",
+            opts = {
+                highlight = { enable = true },
+            },
+            config = function(_, opts)
+                require("nvim-treesitter.configs").setup(opts)
+            end,
+        },
+        {
+            "nvim-neorg/neorg",
+            build = ":Neorg sync-parsers",
+            dependencies = { "nvim-lua/plenary.nvim", "phenax/neorg-hop-extras" },
+            config = function()
+                require("neorg").setup {
+                    load = {
+                        ["core.defaults"] = {},
+                        ["core.journal"] = { config = { strategy = "%Y-%W" } },
+                        ["core.concealer"] = {
+                            config = {
+                                icon_preset = "diamond"
+                            }
+                        },
+                        ["core.export"] = {},
+                        ["core.itero"] = {},
+                        ["core.promo"] = {},
+                        ["core.summary"] = {},
+                        ["core.completion"] = { config = { engine = "nvim-cmp" } },
+                        ["core.integrations.nvim-cmp"] = {},
+                        ['external.hop-extras'] = {
+                            config = {
+                                aliases = {
+                                    tw = 'https://twitter.com/{}',
+                                    gh = 'https://github.com/jimdo/{}',
+                                    co = 'https://jimplan.atlassian.net/wiki/spaces/{}',
+                                    sl = 'https://jimdo.slack.com/archives/{}'
+                                },
+                            },
+                        },
+                        ["core.keybinds"] = {
+                            config = {
+                                hook = function(keybinds)
+                                    local leader = keybinds.leader
+
+                                    -- Map all the below keybinds only when the "norg" mode is active
+                                    keybinds.map_event_to_mode("norg", {
+                                        n = {
+                                            -- Marks the task under the cursor as "undone"
+                                            -- ^mark Task as Undone
+                                            {
+                                                leader .. "tu",
+                                                "core.qol.todo_items.todo.task_undone",
+                                                opts = { desc = "[neorg] Mark as Undone" },
+                                            },
+
+                                            -- Marks the task under the cursor as "pending"
+                                            -- ^mark Task as Pending
+                                            {
+                                                leader .. "tp",
+                                                "core.qol.todo_items.todo.task_pending",
+                                                opts = { desc = "[neorg] Mark as Pending" },
+                                            },
+
+                                            -- Marks the task under the cursor as "done"
+                                            -- ^mark Task as Done
+                                            { leader .. "td", "core.qol.todo_items.todo.task_done",  opts = { desc = "[neorg] Mark as Done" } },
+
+                                            -- Marks the task under the cursor as "on_hold"
+                                            -- ^mark Task as on Hold
+                                            {
+                                                leader .. "th",
+                                                "core.qol.todo_items.todo.task_on_hold",
+                                                opts = { desc = "[neorg] Mark as On Hold" },
+                                            },
+
+                                            -- Marks the task under the cursor as "cancelled"
+                                            -- ^mark Task as Cancelled
+                                            {
+                                                leader .. "tc",
+                                                "core.qol.todo_items.todo.task_cancelled",
+                                                opts = { desc = "[neorg] Mark as Cancelled" },
+                                            },
+
+                                            -- Marks the task under the cursor as "recurring"
+                                            -- ^mark Task as Recurring
+                                            {
+                                                leader .. "tr",
+                                                "core.qol.todo_items.todo.task_recurring",
+                                                opts = { desc = "[neorg] Mark as Recurring" },
+                                            },
+
+                                            -- Marks the task under the cursor as "important"
+                                            -- ^mark Task as Important
+                                            {
+                                                leader .. "ti",
+                                                "core.qol.todo_items.todo.task_important",
+                                                opts = { desc = "[neorg] Mark as Important" },
+                                            },
+
+                                            -- Marks the task under the cursor as "ambiguous"
+                                            -- ^mark Task as ambiguous
+                                            {
+                                                leader .. "ta",
+                                                "core.qol.todo_items.todo.task_ambiguous",
+                                                opts = { desc = "[neorg] Mark as Ambigous" },
+                                            },
+
+                                            -- Switches the task under the cursor between a select few states
+                                            { "<C-Space>",    "core.qol.todo_items.todo.task_cycle", opts = { desc = "[neorg] Cycle Task" } },
+
+                                            -- Creates a new .norg file to take notes in
+                                            -- ^New Note
+                                            { leader .. "nn", "core.dirman.new.note",                opts = { desc = "[neorg] Create New Note" } },
+
+                                            -- Hop to the destination of the link under the cursor
+                                            { "<CR>",         "core.esupports.hop.hop-link",         opts = { desc = "[neorg] Jump to Link" } },
+                                            { "gd",           "core.esupports.hop.hop-link",         opts = { desc = "[neorg] Jump to Link" } },
+                                            { "gf",           "core.esupports.hop.hop-link",         opts = { desc = "[neorg] Jump to Link" } },
+                                            { "gF",           "core.esupports.hop.hop-link",         opts = { desc = "[neorg] Jump to Link" } },
+
+                                            { "<M-CR>",       "core.itero.next-iteration",           "<CR>",                                                      opts = { desc = "[neorg] Continue Object" } },
+                                            -- Same as `<CR>`, except opens the destination in a vertical split
+                                            -- {
+                                            --     "<M-CR>",
+                                            --     "core.esupports.hop.hop-link",
+                                            --     "vsplit",
+                                            --     opts = { desc = "[neorg] Jump to Link (Vertical Split)" },
+                                            -- },
+
+                                            { ">.",           "core.promo.promote",                  opts = { desc = "[neorg] Promote Object (Non-Recursively)" } },
+                                            { "<,",           "core.promo.demote",                   opts = { desc = "[neorg] Demote Object (Non-Recursively)" } },
+
+                                            { ">>",           "core.promo.promote",                  "nested",                                                    opts = { desc = "[neorg] Promote Object (Recursively)" } },
+                                            { "<<",           "core.promo.demote",                   "nested",                                                    opts = { desc = "[neorg] Demote Object (Recursively)" } },
+
+                                            {
+                                                leader .. "lt",
+                                                "core.pivot.toggle-list-type",
+                                                opts = { desc = "[neorg] Toggle (Un)ordered List" },
+                                            },
+                                            {
+                                                leader .. "li",
+                                                "core.pivot.invert-list-type",
+                                                opts = { desc = "[neorg] Invert (Un)ordered List" },
+                                            },
+
+                                            { leader .. "id", "core.tempus.insert-date", opts = { desc = "[neorg] Insert Date" } },
+                                        },
+
+                                        i = {
+                                            { "<C-t>",  "core.promo.promote",                  opts = { desc = "[neorg] Promote Object (Recursively)" } },
+                                            { "<C-d>",  "core.promo.demote",                   opts = { desc = "[neorg] Demote Object (Recursively)" } },
+                                            { "<M-CR>", "core.itero.next-iteration",           "<CR>",                                                  opts = { desc = "[neorg] Continue Object" } },
+                                            { "<M-d>",  "core.tempus.insert-date-insert-mode", opts = { desc = "[neorg] Insert Date" } },
+                                        },
+
+                                        -- TODO: Readd these
+                                        -- v = {
+                                        --     { ">>", ":<cr><cmd>Neorg keybind all core.promo.promote_range<cr>" },
+                                        --     { "<<", ":<cr><cmd>Neorg keybind all core.promo.demote_range<cr>" },
+                                        -- },
+                                    }, {
+                                        silent = true,
+                                        noremap = true,
+                                    })
+                                end,
+                            }
+                        },
+                        ["core.dirman"] = {
+                            config = {
+                                workspaces = {
+                                    notes = "~/drive/orgfiles",
+                                },
+                                default_workspace = "notes",
+                            },
+                        },
+                    },
+                }
+
+                vim.wo.foldlevel = 99
+                vim.wo.conceallevel = 2
+            end,
+        }
+    },
+    {
+        "jellydn/CopilotChat.nvim",
+        dependencies = { "zbirenbaum/copilot.lua" }, -- Or { "github/copilot.vim" }
+        opts = {
+            mode = "split",                          -- newbuffer or split  , default: newbuffer
+            debug = true,                            -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
+        },
+        build = function()
+            vim.defer_fn(function()
+                vim.cmd("UpdateRemotePlugins")
+                vim.notify("CopilotChat - Updated remote plugins. Please restart Neovim.")
+            end, 3000)
+        end,
+        event = "VeryLazy",
+        keys = {
+            { "<leader>cce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
+            { "<leader>cct", "<cmd>CopilotChatTests<cr>",   desc = "CopilotChat - Generate tests" },
+        },
+    },
+    {
+        "jackMort/ChatGPT.nvim",
+        event = "VeryLazy",
+        lazy = true,
+        config = function()
+            require("chatgpt").setup {
+                api_key_cmd = "op read op://Individual/OPENAI_API_KEY/credential --no-newline",
+                openai_params = {
+                    model = "gpt-4",
+                    frequency_penalty = 0,
+                    presence_penalty = 0,
+                    max_tokens = 300,
+                    temperature = 0,
+                    top_p = 1,
+                    n = 1,
+                },
+            }
+        end,
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "nvim-lua/plenary.nvim",
+            "folke/trouble.nvim",
+            "nvim-telescope/telescope.nvim"
+        }
     }
+
 }, {
     install = {
         -- install missing plugins on startup. This doesn't increase startup time.

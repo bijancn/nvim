@@ -9,14 +9,13 @@ vim.keymap.set("n", "<leader>pp", function()
 end)
 
 require('telescope').setup {
-    -- defaults = {
-    --     mappings = {
-    --         i = {
-    --             ['<C-u>'] = false,
-    --             ['<C-d>'] = false,
-    --         },
-    --     },
-    -- },
+    pickers = {
+        live_grep = {
+            additional_args = function(opts)
+                return { "--hidden" }
+            end
+        },
+    }
 }
 
 -- Enable telescope fzf native, if installed

@@ -1,9 +1,12 @@
--- vim.cmd("colorscheme rose-pine-moon")
+-- vim.cmd("colorscheme rose-pine-dawn")
 
 require('onedark').setup {
-    style = 'warm'
+    style = 'light'
 }
 require('onedark').load()
+
+-- not varied enough
+-- vim.cmd.colorscheme('kanagawa')
 
 -- pretty blue :/
 -- vim.cmd [[colorscheme tokyonight]]

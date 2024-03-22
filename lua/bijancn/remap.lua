@@ -1,4 +1,5 @@
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 -- Buffers
 vim.keymap.set("n", "<leader>bv", ':e <c-r>=expand("%:p:h")<cr>/<cr>',
@@ -54,3 +55,7 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 --     vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
 -- end)
 vim.keymap.set("n", "<leader>oi", vim.cmd.OrganizeImports, { desc = "Organize imports" })
+
+vim.keymap.set("n", "<leader>ni", ":Neorg index<CR>", { desc = "[neorg] Go to index" })
+
+vim.keymap.set("n", "<leader>cg", ":ChatGPT<CR>", { desc = "[ChatGPT] Start" })
