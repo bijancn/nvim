@@ -154,6 +154,7 @@ cmp.setup {
     },
     sources = {
         { name = 'nvim_lsp' },
+        { name = 'vim-dadbod-completion' },
         { name = 'luasnip' },
         { name = 'orgmode' },
         { name = 'neorg' },

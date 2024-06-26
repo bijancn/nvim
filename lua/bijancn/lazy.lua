@@ -37,6 +37,20 @@ require("lazy").setup({
     },
     { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' },
     {
+        "ray-x/go.nvim",
+        dependencies = { -- optional packages
+            "ray-x/guihua.lua",
+            "neovim/nvim-lspconfig",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+            require("go").setup()
+        end,
+        event = { "CmdlineEnter" },
+        ft = { "go", 'gomod' },
+        build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
+    },
+    {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.3",
         dependencies = { "nvim-lua/plenary.nvim", {
@@ -205,99 +219,6 @@ require("lazy").setup({
         }
     },
     {
-        'nvim-orgmode/orgmode',
-        dependencies = {
-            { 'nvim-treesitter/nvim-treesitter', lazy = true },
-            { 'akinsho/org-bullets.nvim',        lazy = true },
-            -- {
-            --     "lukas-reineke/headlines.nvim",
-            --     config = true, -- or `opts = {}`
-            -- },
-        },
-        event = 'VeryLazy',
-        config = function()
-            -- Load treesitter grammar for org
-            require('orgmode').setup_ts_grammar()
-
-            -- Setup treesitter
-            require('nvim-treesitter.configs').setup({
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = { 'org' },
-                },
-                ensure_installed = { 'org' },
-            })
-
-            -- Setup orgmode
-            require('orgmode').setup({
-                org_agenda_files = '~/orgfiles/**/*',
-                org_default_notes_file = '~/orgfiles/refile.org',
-                org_log_done = false,
-                org_todo_keywords = { 'TODO(t)', 'WAITING(w)', '|', 'DONE(d)', 'WONTDO(o)' },
-                org_todo_keyword_faces = {
-                    WAITING = ':foreground #4285F4 :slant italic',
-                },
-                org_blank_before_new_entry = { heading = false, plain_list_item = false },
-                org_agenda_skip_scheduled_if_done = true,
-                org_agenda_skip_deadline_if_done = true,
-                mappings = {
-                    capture = {
-                        org_capture_finalize = '<Leader>w',
-                        org_capture_refile = 'R',
-                        org_capture_kill = 'Q'
-                    }
-                }
-            })
-
-            -- require("headlines").setup {
-            --     org = {
-            --         query = vim.treesitter.query.parse(
-            --             "org",
-            --             [[
-            --     (headline (stars) @headline)
-            --
-            --     (
-            --         (expr) @dash
-            --         (#match? @dash "^-----+$")
-            --     )
-            --
-            --     (block
-            --         name: (expr) @_name
-            --         (#eq? @_name "SRC")
-            --     ) @codeblock
-            --
-            --     (paragraph . (expr) @quote
-            --         (#eq? @quote ">")
-            --     )
-            -- ]]
-            --         ),
-            --         headline_highlights = {},
-            --         codeblock_highlight = "CodeBlock",
-            --         dash_highlight = "Dash",
-            --         dash_string = "-",
-            --         quote_highlight = "Quote",
-            --         quote_string = "┃",
-            --         fat_headlines = false,
-            --         fat_headline_upper_string = "▃",
-            --         fat_headline_lower_string = "🬂",
-            --     },
-            -- }
-
-            require('org-bullets').setup {
-                concealcursor = true, -- If false then when the cursor is on a line underlying characters are visible
-                symbols = {
-                    list = "•",
-                    headlines = { "▲", "►", "▼", "◄" },
-                    checkboxes = {
-                        half = { "", "OrgTSCheckboxHalfChecked" },
-                        done = { "✓", "OrgDone" },
-                        todo = { "˟", "OrgTODO" },
-                    },
-                }
-            }
-        end,
-    },
-    {
         "rebelot/kanagawa.nvim", -- neorg needs a colorscheme with treesitter support
         {
             "nvim-treesitter/nvim-treesitter",
@@ -310,9 +231,13 @@ require("lazy").setup({
             end,
         },
         {
+            "vhyrro/luarocks.nvim",
+            priority = 1000, -- We'd like this plugin to load first out of the rest
+            config = true,   -- This automatically runs `require("luarocks-nvim").setup()`
+        },
+        {
             "nvim-neorg/neorg",
-            build = ":Neorg sync-parsers",
-            dependencies = { "nvim-lua/plenary.nvim", "phenax/neorg-hop-extras" },
+            dependencies = { "nvim-lua/plenary.nvim", "phenax/neorg-hop-extras", "luarocks.nvim" },
             config = function()
                 require("neorg").setup {
                     load = {
@@ -510,15 +435,16 @@ require("lazy").setup({
         config = function()
             require("chatgpt").setup {
                 api_key_cmd = "op read op://Individual/OPENAI_API_KEY/credential --no-newline",
+                predefined_chat_gpt_prompts = "https://raw.githubusercontent.com/bijancn/nvim/main/prompts.csv",
                 openai_params = {
-                    model = "gpt-4",
+                    model = "gpt-4o",
                     frequency_penalty = 0,
                     presence_penalty = 0,
-                    max_tokens = 300,
+                    max_tokens = 2000,
                     temperature = 0,
                     top_p = 1,
                     n = 1,
-                },
+                }
             }
         end,
         dependencies = {
