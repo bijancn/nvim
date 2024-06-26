@@ -58,4 +58,4 @@ vim.keymap.set("n", "<leader>oi", vim.cmd.OrganizeImports, { desc = "Organize im
 
 vim.keymap.set("n", "<leader>ni", ":Neorg index<CR>", { desc = "[neorg] Go to index" })
 
-vim.keymap.set("n", "<leader>cg", ":ChatGPT<CR>", { desc = "[ChatGPT] Start" })
+vim.keymap.set("n", "<leader>cg", ":ChatGPTActAs<CR>", { desc = "[ChatGPT] Start" })
