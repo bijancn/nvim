@@ -35,7 +35,8 @@ require("lazy").setup({
             })
         end
     },
-    { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' },
+    -- Seems to break Neogit ?!
+    -- { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' },
     {
         "ray-x/go.nvim",
         dependencies = { -- optional packages
@@ -64,11 +65,11 @@ require("lazy").setup({
     { "mbbill/undotree" },
     {
         "NeogitOrg/neogit",
+        -- cmd = "Neogit",
         dependencies = {
             "nvim-lua/plenary.nvim",         -- required
+            "sindrets/diffview.nvim",        -- optional - Diff integration
             "nvim-telescope/telescope.nvim", -- optional
-            "sindrets/diffview.nvim",        -- optional
-            "ibhagwan/fzf-lua",              -- optional
         },
         config = true
     },
