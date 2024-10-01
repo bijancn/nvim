@@ -39,11 +39,9 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 -- Q is weird
 vim.keymap.set("n", "Q", "<nop>")
 
--- Quickfix list shortcuts
--- vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
--- vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
+-- Go to next/previous diagnostic
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { noremap = true, silent = true })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>suw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = 'Substitute word you are currently on' })
@@ -58,4 +56,5 @@ vim.keymap.set("n", "<leader>oi", vim.cmd.OrganizeImports, { desc = "Organize im
 
 vim.keymap.set("n", "<leader>ni", ":Neorg index<CR>", { desc = "[neorg] Go to index" })
 
-vim.keymap.set("n", "<leader>cg", ":ChatGPTActAs<CR>", { desc = "[ChatGPT] Start" })
+vim.keymap.set("n", "<leader>cg", ":ChatGPT<CR>", { desc = "[ChatGPT] Start" })
+vim.keymap.set("n", "<leader>cG", ":ChatGPTActAs<CR>", { desc = "[ChatGPTActAs] Start" })

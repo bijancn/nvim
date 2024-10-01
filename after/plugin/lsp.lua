@@ -35,14 +35,15 @@ local servers = {
     -- gopls = {},
     -- pyright = {},
     -- rust_analyzer = {},
-    tsserver = {
-        commands = {
-            OrganizeImports = {
-                organize_imports,
-                description = "Organize Imports"
-            }
-        }
-    },
+    -- Doesn't exist anymore
+    -- tsserver = {
+    --     commands = {
+    --         OrganizeImports = {
+    --             organize_imports,
+    --             description = "Organize Imports"
+    --         }
+    --     }
+    -- },
     -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
     lua_ls = {
@@ -166,10 +167,11 @@ local null_ls = require('null-ls')
 null_ls.setup({
     on_attach = lsp.on_attach,
     sources = {
-        null_ls.builtins.diagnostics.eslint_d,
+        -- null_ls.builtins.diagnostics.eslint_d,
         -- null_ls.builtins.diagnostics.luacheck,
         null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.eslint_d,
+        -- null_ls.builtins.formatting.eslint_d,
+        null_ls.builtins.formatting.prettier,
         null_ls.builtins.formatting.isort,
         -- null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.rustfmt
