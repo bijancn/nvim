@@ -12,6 +12,55 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+    { "ggandor/leap.nvim", dependencies = { "tpope/vim-repeat" } },
+    {
+        "kdheepak/lazygit.nvim",
+        lazy = true,
+        cmd = {
+            "LazyGit",
+            "LazyGitConfig",
+            "LazyGitCurrentFile",
+            "LazyGitFilter",
+            "LazyGitFilterCurrentFile",
+        },
+        -- optional for floating window border decoration
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+        -- setting the keybinding for LazyGit with 'keys' is recommended in
+        -- order to load the plugin when the command is run for the first time
+        keys = {
+            { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
+        }
+    },
+    {
+        'pwntester/octo.nvim',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope.nvim',
+            -- OR 'ibhagwan/fzf-lua',
+            'nvim-tree/nvim-web-devicons',
+        },
+        config = function()
+            require "octo".setup()
+        end
+    },
+    {
+        'akinsho/toggleterm.nvim',
+        version = "*",
+        opts = { shade_terminals = false
+        }
+    },
+    {
+        'topaxi/gh-actions.nvim',
+        keys = {
+            { '<leader>gh', '<cmd>GhActions<cr>', desc = 'Open Github Actions' },
+        },
+        -- optional, you can also install and use `yq` instead.
+        build = 'make',
+        ---@type GhActionsConfig
+        opts = {},
+    },
     {
         "nvim-neotest/neotest",
         dependencies = {
@@ -383,7 +432,6 @@ require("lazy").setup({
                                             { "gf",           "core.esupports.hop.hop-link",         opts = { desc = "[neorg] Jump to Link" } },
                                             { "gF",           "core.esupports.hop.hop-link",         opts = { desc = "[neorg] Jump to Link" } },
 
-                                            { "<M-CR>",       "core.itero.next-iteration",           "<CR>",                                                      opts = { desc = "[neorg] Continue Object" } },
                                             -- Same as `<CR>`, except opens the destination in a vertical split
                                             -- {
                                             --     "<M-CR>",
@@ -409,7 +457,8 @@ require("lazy").setup({
                                                 opts = { desc = "[neorg] Invert (Un)ordered List" },
                                             },
 
-                                            { leader .. "id", "core.tempus.insert-date", opts = { desc = "[neorg] Insert Date" } },
+                                            { leader .. "id", "core.tempus.insert-date",   opts = { desc = "[neorg] Insert Date" } },
+                                            { leader .. "nt", "core.itero.next-iteration", "<CR>",                                 opts = { desc = "[neorg] Continue Object" } },
                                         },
 
                                         i = {
@@ -444,6 +493,8 @@ require("lazy").setup({
 
                 vim.wo.foldlevel = 99
                 vim.wo.conceallevel = 2
+                vim.cmd('hi @neorg.markup.verbatim.norg guifg=Green')
+                vim.cmd('echo "hello"')
             end,
         }
     },

@@ -4,9 +4,9 @@ require("project_nvim").setup {
     patterns = { "!bijancn", ".git" }
 }
 require("telescope").load_extension("projects")
-vim.keymap.set("n", "<leader>pp", function()
+vim.keymap.set("n", "<leader>p", function()
     require("telescope").extensions.projects.projects({})
-end)
+end, { desc = 'telescope: find [p]roject' })
 
 require('telescope').setup {
     pickers = {
@@ -21,22 +21,24 @@ require('telescope').setup {
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>fo', require('telescope.builtin').oldfiles, { desc = 'telescope:[f]ind [o]ld files' })
+vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers, { desc = 'telescope: [f]ind [b]uffers' })
 vim.keymap.set('n', '<leader>/', function()
     require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
         winblend = 10,
         previewer = false,
     })
-end, { desc = '[/] Fuzzily search in current buffer' })
+end, { desc = 'telescope: [/] Fuzzily search in current buffer' })
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').git_files, { desc = 'telescope: [f]ind [g]it files' })
+vim.keymap.set('n', '<leader>ff', function() require('telescope.builtin').find_files({ hidden = true }) end,
+    { desc = 'telescope: [f]ind [f]iles' })
 
-vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>ff', function()
-    require('telescope.builtin').find_files({ hidden = true })
-end, { desc = '[F]ind [F]iles' })
-vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymaps' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = 'telescope: [s]earch [h]elp' })
+vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = 'telescope: [s]earch [k]eymaps' })
+vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string,
+    { desc = 'telescope: [s]earch current [w]ord' })
+-- TODO: Implement sv searching for currently visually selected
+vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = 'telescope: [s]earch by [g]rep' })
+vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics,
+    { desc = 'telescope: [s]earch [d]iagnostics' })
+vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 'telescope: [s]earch [r]esume' })
