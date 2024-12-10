@@ -235,6 +235,24 @@ require("lazy").setup({
         lazy = true,
         config = function()
             require("copilot").setup({
+                suggestion = {
+                    auto_trigger = true,
+                    keymap = {
+                        accept = "<M-j>",
+                        accept_word = false,
+                        accept_line = false,
+                        next = "<M-]>",
+                        prev = "<M-[>",
+                        dismiss = "<C-]>",
+                    },
+                },
+                keymap = {
+                    jump_prev = "[[",
+                    jump_next = "]]",
+                    accept = "<Tab>",
+                    refresh = "gr",
+                    open = "<M-CR>"
+                },
                 filetypes = {
                     yaml = true,
                     markdown = false,
@@ -494,7 +512,6 @@ require("lazy").setup({
                 vim.wo.foldlevel = 99
                 vim.wo.conceallevel = 2
                 vim.cmd('hi @neorg.markup.verbatim.norg guifg=Green')
-                vim.cmd('echo "hello"')
             end,
         }
     },

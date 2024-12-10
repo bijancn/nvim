@@ -41,11 +41,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        -- Tsserver usually works poorly. Sorry you work with bad languages
-        -- You can remove this line if you know what you're doing :)
-        if client.name == 'tsserver' then
+        -- Prefer prettier via null-ls
+        if client.name == 'tsserver' or client.name == 'ts_ls' then
             return
         end
+        print('Formatting with: ' .. tostring(client.name))
 
         -- Create an autocmd that will run *before* we save the buffer.
         --  Run the formatting command for the LSP that has just attached.
