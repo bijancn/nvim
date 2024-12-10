@@ -516,51 +516,6 @@ require("lazy").setup({
         }
     },
     {
-        "jellydn/CopilotChat.nvim",
-        dependencies = { "zbirenbaum/copilot.lua" }, -- Or { "github/copilot.vim" }
-        opts = {
-            mode = "split",                          -- newbuffer or split  , default: newbuffer
-            debug = true,                            -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
-        },
-        build = function()
-            vim.defer_fn(function()
-                vim.cmd("UpdateRemotePlugins")
-                vim.notify("CopilotChat - Updated remote plugins. Please restart Neovim.")
-            end, 3000)
-        end,
-        event = "VeryLazy",
-        keys = {
-            { "<leader>cce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
-            { "<leader>cct", "<cmd>CopilotChatTests<cr>",   desc = "CopilotChat - Generate tests" },
-        },
-    },
-    {
-        "jackMort/ChatGPT.nvim",
-        event = "VeryLazy",
-        lazy = true,
-        config = function()
-            require("chatgpt").setup {
-                api_key_cmd = "op read op://Individual/OPENAI_API_KEY/credential --no-newline",
-                predefined_chat_gpt_prompts = "https://raw.githubusercontent.com/bijancn/nvim/main/prompts.csv",
-                openai_params = {
-                    model = "gpt-4o",
-                    frequency_penalty = 0,
-                    presence_penalty = 0,
-                    max_tokens = 2000,
-                    temperature = 0,
-                    top_p = 1,
-                    n = 1,
-                }
-            }
-        end,
-        dependencies = {
-            "MunifTanjim/nui.nvim",
-            "nvim-lua/plenary.nvim",
-            -- "folke/trouble.nvim",
-            "nvim-telescope/telescope.nvim"
-        }
-    },
-    {
         "yetone/avante.nvim",
         event = "VeryLazy",
         build = "make", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
@@ -570,7 +525,8 @@ require("lazy").setup({
         config = {
             provider = "openai",
             openai = {
-                model = "gpt-4o"
+                model = "gpt-4o",
+                api_key_name = "cmd:op read op://Individual/OPENAI_API_KEY/credential --no-newline"
             }
         },
         dependencies = {
