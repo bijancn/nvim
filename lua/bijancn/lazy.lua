@@ -347,8 +347,8 @@ require("lazy").setup({
             provider = "openai",
             openai = {
                 model = "gpt-4o",
-                api_key_name = "cmd:gopass show -o websites/openai.com/openai.com@bijan.cloud"
-                -- api_key_name = "cmd:sh /Users/bcn/repos/bcn_scripts/bin/get-openapi-key"
+                -- api_key_name = "cmd:gopass show -o websites/openai.com/openai.com@bijan.cloud"
+                api_key_name = "cmd:sh /Users/bcn/repos/bcn_scripts/bin/get-openapi-key"
             }
         },
         dependencies = {
