@@ -340,23 +340,41 @@ require("lazy").setup({
         {
             "yetone/avante.nvim",
             event = "VeryLazy",
-            build = "make", -- Optional, only if you want to use tiktoken_core to calculate token counts
+            lazy = false,
+            version = false, -- set this if you want to always pull the latest change
             opts = {
-                provider = "openai",
-                openai = {
-                    model = "gpt-4o",
-                    -- api_key_name = "cmd:gopass show -o websites/openai.com/openai.com@bijan.cloud"
-                    api_key_name = "cmd:sh /Users/bcn/repos/bcn_scripts/bin/get-openapi-key"
-                }
+                -- add any opts here
             },
+            -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+            build = "make",
             dependencies = {
-                "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
                 "stevearc/dressing.nvim",
                 "nvim-lua/plenary.nvim",
                 "MunifTanjim/nui.nvim",
-                -- The below is optional, make sure to set it up properly if you have lazy=true
+                --- The below dependencies are optional,
+                "hrsh7th/nvim-cmp",            -- autocompletion for avante commands and mentions
+                "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+                "zbirenbaum/copilot.lua",      -- for providers='copilot'
                 {
-                    "MeanderingProgrammer/render-markdown.nvim",
+                    -- support for image pasting
+                    "HakonHarnes/img-clip.nvim",
+                    event = "VeryLazy",
+                    opts = {
+                        -- recommended settings
+                        default = {
+                            embed_image_as_base64 = false,
+                            prompt_for_file_name = false,
+                            drag_and_drop = {
+                                insert_mode = true,
+                            },
+                            -- required for Windows users
+                            use_absolute_path = true,
+                        },
+                    },
+                },
+                {
+                    -- Make sure to set this up properly if you have lazy=true
+                    'MeanderingProgrammer/render-markdown.nvim',
                     opts = {
                         file_types = { "markdown", "Avante" },
                     },
