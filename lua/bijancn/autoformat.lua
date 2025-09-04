@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        -- Prefer prettier via null-ls
+        -- Skip tsserver formatting since null-ls was removed
         if client.name == 'tsserver' or client.name == 'ts_ls' then
             return
         end
@@ -57,12 +57,22 @@ vim.api.nvim_create_autocmd('LspAttach', {
                     return
                 end
 
-                vim.lsp.buf.format {
-                    async = false,
-                    filter = function(c)
-                        return c.id == client.id
-                    end,
-                }
+                -- Use conform.nvim if available, otherwise fallback to LSP
+                local conform_ok, conform = pcall(require, 'conform')
+                if conform_ok then
+                    conform.format({ 
+                        bufnr = bufnr, 
+                        async = false,
+                        lsp_fallback = true 
+                    })
+                else
+                    vim.lsp.buf.format {
+                        async = false,
+                        filter = function(c)
+                            return c.id == client.id
+                        end,
+                    }
+                end
             end,
         })
     end,

@@ -169,7 +169,32 @@ require("lazy").setup({
         { "nvim-tree/nvim-tree.lua",          dependencies = { "nvim-tree/nvim-web-devicons" } },
         -- Git status next to the line numbers and allows reverting of chunks
         { "lewis6991/gitsigns.nvim" },
-        { "jose-elias-alvarez/null-ls.nvim" }, -- Allows to use eslint as formatter
+        {
+            "stevearc/conform.nvim",
+            config = function()
+                require("conform").setup({
+                    formatters_by_ft = {
+                        javascript = { "prettier" },
+                        typescript = { "prettier" },
+                        typescriptreact = { "prettier" },
+                        javascriptreact = { "prettier" },
+                        json = { "prettier" },
+                        html = { "prettier" },
+                        css = { "prettier" },
+                        scss = { "prettier" },
+                        markdown = { "prettier" },
+                        yaml = { "prettier" },
+                        lua = { "stylua" },
+                        python = { "black", "isort" },
+                        rust = { "rustfmt" },
+                    },
+                    format_on_save = {
+                        timeout_ms = 500,
+                        lsp_fallback = true,
+                    },
+                })
+            end,
+        },
         { "stevearc/dressing.nvim" },          -- Makes something prettier?
         -- Review LSP errors and similar in popup window
         {
