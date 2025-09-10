@@ -58,8 +58,11 @@ local servers = {
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
 
+-- mason-lspconfig v2 removed `setup_handlers`. We disable its automatic
+-- enabling of servers and configure them explicitly via lspconfig below.
 mason_lspconfig.setup {
     ensure_installed = vim.tbl_keys(servers),
+    automatic_enable = false,
 }
 
 -- [[ Configure LSP ]]
@@ -101,17 +104,31 @@ local on_attach = function(_, bufnr)
 end
 
 
-mason_lspconfig.setup_handlers {
-    function(server_name)
-        require('lspconfig')[server_name].setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = (servers[server_name] or {}).settings,
-            filetypes = (servers[server_name] or {}).filetypes,
-            commands = (servers[server_name] or {}).commands,
-        }
-    end
-}
+-- Manually set up each server with lspconfig (replacement for the
+-- deprecated `mason_lspconfig.setup_handlers`).
+local configured = {}
+local function configure(server_name)
+    if configured[server_name] then return end
+    configured[server_name] = true
+    local cfg = servers[server_name] or {}
+    require('lspconfig')[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = cfg.settings,
+        filetypes = cfg.filetypes,
+        commands = cfg.commands,
+    }
+end
+
+-- Configure any explicitly defined servers.
+for server_name, _ in pairs(servers) do
+    configure(server_name)
+end
+
+-- Also configure any servers installed via Mason.
+for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
+    configure(server_name)
+end
 
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
