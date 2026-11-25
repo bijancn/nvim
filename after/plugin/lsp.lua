@@ -10,7 +10,7 @@ vim.lsp.config('*', {
 
 local servers = {
     -- clangd = {},
-    -- gopls = {},
+    gopls = {}, -- go.nvim's :GoFmt and format-on-save for Go rely on it
     -- pyright = {},
     -- rust_analyzer = {},
     -- html = { filetypes = { 'html', 'twig', 'hbs'} },

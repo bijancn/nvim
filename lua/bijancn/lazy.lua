@@ -151,12 +151,13 @@ require("lazy").setup({
         { "kristijanhusak/vim-create-pr" },
         {
             -- Highlight, edit, and navigate code
-            -- The `main` branch is a rewrite without `nvim-treesitter.configs`;
-            -- stay on the (frozen) master branch that this config is written for.
+            -- `main` is the rewrite for Nvim 0.12 (master is archived and its
+            -- textobjects break on 0.12). Setup lives in after/plugin/treesitter.lua.
             'nvim-treesitter/nvim-treesitter',
-            branch = 'master',
+            branch = 'main',
+            lazy = false,
             dependencies = {
-                { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'master' },
+                { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'main' },
             },
             build = ':TSUpdate',
         },

@@ -69,8 +69,7 @@ require('gitsigns').setup({
         map('n', '<leader>hp', gs.preview_hunk, { desc = 'Hunk: Preview Changes' })
         map('n', '<leader>hb', function() gs.blame_line { full = true } end,
             { desc = 'Hunk Blame: Show commit of current line' })
-        -- <leader>gb is :GBrowse (after/plugin/fugitive.lua)
-        map('n', '<leader>gB', gs.toggle_current_line_blame,
+        map('n', '<leader>gb', gs.toggle_current_line_blame,
             { desc = 'Git Blame: Toggle showing the author at end of line' })
         map('n', '<leader>hd', gs.diffthis, { desc = 'Hunk: Diff file against stage' })
         map('n', '<leader>hD', function() gs.diffthis('~') end, { desc = 'Hunk: Diff file against index' })

@@ -1,6 +1,7 @@
 -- Add projects.nvim extension
 require("project_nvim").setup {
-    detection_methods = { "pattern", "lsp" },
+    -- "lsp" detection calls vim.lsp.buf_get_clients(), which is deprecated in Nvim 0.12
+    detection_methods = { "pattern" },
     patterns = { "!bijancn", ".git" }
 }
 require("telescope").load_extension("projects")
