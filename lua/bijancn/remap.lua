@@ -39,10 +39,14 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 -- Q is weird
 vim.keymap.set("n", "Q", "<nop>")
 
+local function show_diagnostic(diagnostic, buf)
+    if diagnostic then vim.diagnostic.open_float({ bufnr = buf, scope = 'cursor', focus = false }) end
+end
+
 -- Go to next/previous diagnostic
-vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, on_jump = show_diagnostic }) end,
     { silent = true, desc = 'Next diagnostic' })
-vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, on_jump = show_diagnostic }) end,
     { silent = true, desc = 'Previous diagnostic' })
 
 vim.keymap.set("n", "<leader>suw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],

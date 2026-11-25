@@ -8,13 +8,17 @@ vim.lsp.config('*', {
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
 })
 
+-- Recognize Go templates before go.nvim's lazy-loaded filetype scripts run.
+vim.filetype.add({ extension = { gotmpl = 'gotmpl', gotext = 'gotexttmpl', gohtml = 'gohtmltmpl' } })
+vim.treesitter.language.register('gotmpl', { 'gotexttmpl', 'gohtmltmpl' })
+
 local servers = {
     -- clangd = {},
-    gopls = {}, -- go.nvim's :GoFmt and format-on-save for Go rely on it
+    gopls = { filetypes = { 'go', 'gomod', 'gowork', 'gotmpl', 'gotexttmpl', 'gohtmltmpl' } },
     -- pyright = {},
     -- rust_analyzer = {},
     -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-    ts_ls = {},
+    ts_ls = { filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' } },
     lua_ls = {
         settings = {
             Lua = {

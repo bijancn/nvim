@@ -10,20 +10,6 @@ local ensure_installed = {
 }
 require('nvim-treesitter').install(ensure_installed)
 
-vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('bijancn-treesitter', { clear = true }),
-    callback = function(args)
-        -- Only for filetypes that have a parser installed
-        if not pcall(vim.treesitter.start, args.buf) then return end
-        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-    end,
-})
-
--- Incremental selection (built into Nvim 0.12 as `an` / `in` in visual mode)
-vim.keymap.set('n', '<c-space>', 'van', { remap = true, desc = 'Start treesitter selection' })
-vim.keymap.set('x', '<c-space>', 'an', { remap = true, desc = 'Expand selection to parent node' })
-vim.keymap.set('x', '<M-space>', 'in', { remap = true, desc = 'Shrink selection to child node' })
-
 -- Textobjects
 require('nvim-treesitter-textobjects').setup {
     select = {
@@ -34,38 +20,74 @@ require('nvim-treesitter-textobjects').setup {
     },
 }
 
-local select = require('nvim-treesitter-textobjects.select')
-for keys, capture in pairs({
-    ['aa'] = '@parameter.outer',
-    ['ia'] = '@parameter.inner',
-    ['af'] = '@function.outer',
-    ['if'] = '@function.inner',
-    ['ac'] = '@class.outer',
-    ['ic'] = '@class.inner',
-}) do
-    vim.keymap.set({ 'x', 'o' }, keys, function()
-        select.select_textobject(capture, 'textobjects')
-    end, { desc = 'Select ' .. capture })
-end
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('bijancn-treesitter', { clear = true }),
+    callback = function(args)
+        local buf = args.buf
+        local lang = vim.treesitter.language.get_lang(args.match)
+        if not lang or not vim.treesitter.get_parser(buf, lang) then return end
+        vim.treesitter.start(buf, lang)
 
-local move = require('nvim-treesitter-textobjects.move')
-for keys, m in pairs({
-    [']m'] = { move.goto_next_start, '@function.outer' },
-    [']]'] = { move.goto_next_start, '@class.outer' },
-    [']M'] = { move.goto_next_end, '@function.outer' },
-    [']['] = { move.goto_next_end, '@class.outer' },
-    ['[]'] = { move.goto_previous_end, '@class.outer' },
-    ['[m'] = { move.goto_previous_start, '@function.outer' },
-    ['[['] = { move.goto_previous_start, '@class.outer' },
-    ['[M'] = { move.goto_previous_end, '@function.outer' },
-}) do
-    vim.keymap.set({ 'n', 'x', 'o' }, keys, function()
-        m[1](m[2], 'textobjects')
-    end, { desc = 'Move to ' .. m[2] })
-end
+        local function undo(command)
+            local previous = vim.b[buf].undo_ftplugin
+            vim.b[buf].undo_ftplugin = previous and (previous .. ' | ' .. command) or command
+        end
 
-local swap = require('nvim-treesitter-textobjects.swap')
-vim.keymap.set('n', '<leader>a', function() swap.swap_next('@parameter.inner') end,
-    { desc = 'Swap with next parameter' })
-vim.keymap.set('n', '<leader>A', function() swap.swap_previous('@parameter.inner') end,
-    { desc = 'Swap with previous parameter' })
+        if vim.treesitter.query.get(lang, 'indents') then
+            vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            undo('setlocal indentexpr<')
+        end
+
+        local function map(modes, keys, action, opts)
+            opts.buffer = buf
+            vim.keymap.set(modes, keys, action, opts)
+            for _, mode in ipairs(type(modes) == 'table' and modes or { modes }) do
+                undo(("if get(maparg('%s', '%s', 0, 1), 'buffer', 0) | execute '%sunmap <buffer> %s' | endif")
+                    :format(keys, mode, mode, keys))
+            end
+        end
+
+        -- Incremental selection (built into Nvim 0.12 as `an` / `in` in visual mode)
+        map('n', '<c-space>', 'van', { remap = true, desc = 'Start treesitter selection' })
+        map('x', '<c-space>', 'an', { remap = true, desc = 'Expand selection to parent node' })
+        map('x', '<M-space>', 'in', { remap = true, desc = 'Shrink selection to child node' })
+
+        if not vim.treesitter.query.get(lang, 'textobjects') then return end
+
+        local select = require('nvim-treesitter-textobjects.select')
+        for keys, capture in pairs({
+            ['aa'] = '@parameter.outer',
+            ['ia'] = '@parameter.inner',
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = '@class.inner',
+        }) do
+            map({ 'x', 'o' }, keys, function()
+                select.select_textobject(capture, 'textobjects')
+            end, { desc = 'Select ' .. capture })
+        end
+
+        local move = require('nvim-treesitter-textobjects.move')
+        for keys, m in pairs({
+            [']m'] = { move.goto_next_start, '@function.outer' },
+            [']]'] = { move.goto_next_start, '@class.outer' },
+            [']M'] = { move.goto_next_end, '@function.outer' },
+            [']['] = { move.goto_next_end, '@class.outer' },
+            ['[]'] = { move.goto_previous_end, '@class.outer' },
+            ['[m'] = { move.goto_previous_start, '@function.outer' },
+            ['[['] = { move.goto_previous_start, '@class.outer' },
+            ['[M'] = { move.goto_previous_end, '@function.outer' },
+        }) do
+            map({ 'n', 'x', 'o' }, keys, function()
+                m[1](m[2], 'textobjects')
+            end, { desc = 'Move to ' .. m[2] })
+        end
+
+        local swap = require('nvim-treesitter-textobjects.swap')
+        map('n', '<leader>a', function() swap.swap_next('@parameter.inner') end,
+            { desc = 'Swap with next parameter' })
+        map('n', '<leader>A', function() swap.swap_previous('@parameter.inner') end,
+            { desc = 'Swap with previous parameter' })
+    end,
+})
