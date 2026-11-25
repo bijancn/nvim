@@ -40,8 +40,10 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
 
 -- Go to next/previous diagnostic
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { noremap = true, silent = true })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { noremap = true, silent = true })
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
+    { silent = true, desc = 'Next diagnostic' })
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
+    { silent = true, desc = 'Previous diagnostic' })
 
 vim.keymap.set("n", "<leader>suw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = 'Substitute word you are currently on' })
@@ -49,12 +51,4 @@ vim.keymap.set("n", "<leader>suw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left
 -- Make current file executable
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
--- vim.keymap.set("n", "<leader>oi", function()
---     vim.lsp.buf.execute_command({ command = "_typescript.organizeImports", arguments = { vim.fn.expand("%:p") } })
--- end)
-vim.keymap.set("n", "<leader>oi", vim.cmd.OrganizeImports, { desc = "Organize imports" })
-
-vim.keymap.set("n", "<leader>ni", ":Neorg index<CR>", { desc = "[neorg] Go to index" })
-
-vim.keymap.set("n", "<leader>cg", ":ChatGPT<CR>", { desc = "[ChatGPT] Start" })
-vim.keymap.set("n", "<leader>cG", ":ChatGPTActAs<CR>", { desc = "[ChatGPTActAs] Start" })
+-- <leader>oi (organize imports) is set per buffer in after/plugin/lsp.lua

@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
     vim.fn.system({
         "git",
         "clone",
@@ -53,13 +53,14 @@ require("lazy").setup({
             }
         },
         {
-            'topaxi/gh-actions.nvim',
+            -- formerly topaxi/gh-actions.nvim (renamed). Parses workflow YAML
+            -- with `yq`, so no native build step is needed.
+            'topaxi/pipeline.nvim',
+            cmd = 'Pipeline',
             keys = {
-                { '<leader>gh', '<cmd>GhActions<cr>', desc = 'Open Github Actions' },
+                { '<leader>gh', '<cmd>Pipeline<cr>', desc = 'Open Github Actions' },
             },
-            -- optional, you can also install and use `yq` instead.
-            build = 'make',
-            ---@type GhActionsConfig
+            ---@type pipeline.Config
             opts = {},
         },
         {
@@ -68,7 +69,7 @@ require("lazy").setup({
                 "nvim-lua/plenary.nvim",
                 "nvim-treesitter/nvim-treesitter",
                 "antoinemadec/FixCursorHold.nvim",
-                'haydenmeade/neotest-jest',
+                'nvim-neotest/neotest-jest',
                 'nvim-neotest/nvim-nio'
             },
             config = function()
@@ -104,7 +105,7 @@ require("lazy").setup({
         },
         {
             "nvim-telescope/telescope.nvim",
-            tag = "0.1.3",
+            version = "*",
             dependencies = { "nvim-lua/plenary.nvim", {
                 'nvim-telescope/telescope-fzf-native.nvim',
                 build = 'make',
@@ -150,20 +151,22 @@ require("lazy").setup({
         { "kristijanhusak/vim-create-pr" },
         {
             -- Highlight, edit, and navigate code
+            -- The `main` branch is a rewrite without `nvim-treesitter.configs`;
+            -- stay on the (frozen) master branch that this config is written for.
             'nvim-treesitter/nvim-treesitter',
+            branch = 'master',
             dependencies = {
-                'nvim-treesitter/nvim-treesitter-textobjects',
+                { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'master' },
             },
             build = ':TSUpdate',
         },
 
-        { "VonHeikemen/lsp-zero.nvim",        branch = "v3.x" },
-        { "williamboman/mason.nvim" },
-        { "williamboman/mason-lspconfig.nvim" },
+        { "mason-org/mason.nvim" },
+        { "mason-org/mason-lspconfig.nvim" },
         { "neovim/nvim-lspconfig" },
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/nvim-cmp" },
-        { "L3MON4D3/LuaSnip" },
+        { "L3MON4D3/LuaSnip",                 build = "make install_jsregexp" },
         { "ahmedkhalf/project.nvim" }, -- Project manager
         -- file tree
         { "nvim-tree/nvim-tree.lua",          dependencies = { "nvim-tree/nvim-web-devicons" } },
@@ -188,10 +191,11 @@ require("lazy").setup({
                         python = { "black", "isort" },
                         rust = { "rustfmt" },
                     },
-                    format_on_save = {
-                        timeout_ms = 500,
-                        lsp_fallback = true,
-                    },
+                    -- Toggle with :KickstartFormatToggle (see bijancn/autoformat.lua)
+                    format_on_save = function()
+                        if not vim.g.autoformat_enabled then return end
+                        return { timeout_ms = 3000, lsp_format = "fallback" }
+                    end,
                 })
             end,
         },
@@ -245,8 +249,16 @@ require("lazy").setup({
         -- Show indentation guide lines
         { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 
-        -- Additional lua configuration, makes nvim stuff amazing!
-        "folke/neodev.nvim",
+        -- Lua LSP setup for editing the nvim config (successor of neodev.nvim)
+        {
+            "folke/lazydev.nvim",
+            ft = "lua",
+            opts = {
+                library = {
+                    { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+                },
+            },
+        },
 
         {
             "folke/zen-mode.nvim",
@@ -293,7 +305,7 @@ require("lazy").setup({
             cmd = { 'Codex', 'CodexToggle' }, -- Optional: Load only on command execution
             keys = {
                 {
-                    '<leader>cd', -- Change this to your preferred keybinding
+                    '<leader>co', -- <leader>cd is "cd to current file" (after/plugin/nvim-tree.lua)
                     function() require('codex').toggle() end,
                     desc = 'Toggle Codex popup',
                 },
@@ -313,14 +325,14 @@ require("lazy").setup({
         { "rose-pine/neovim",     name = "rose-pine" },
         {
             "f-person/auto-dark-mode.nvim",
-            config = {
+            opts = {
                 update_interval = 1000,
                 set_dark_mode = function()
-                    vim.api.nvim_set_option("background", "dark")
+                    vim.o.background = "dark"
                     vim.cmd("colorscheme onedark")
                 end,
                 set_light_mode = function()
-                    vim.api.nvim_set_option("background", "light")
+                    vim.o.background = "light"
                     vim.cmd("colorscheme onedark")
                 end,
             },
