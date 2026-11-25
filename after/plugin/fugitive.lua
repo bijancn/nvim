@@ -1,4 +1,6 @@
 vim.keymap.set('n', '<leader>gs', vim.cmd.Neogit, { desc = 'Git Status (Neogit)' })
-vim.keymap.set('n', '<leader>gb', ':GBrowse<CR>', { desc = 'Git Browse file in Github' })
+-- Normal-mode <leader>gb is the gitsigns blame toggle (after/plugin/gitsigns.lua)
+vim.keymap.set('n', '<leader>gB', ':GBrowse<CR>', { desc = 'Git Browse file in Github' })
+vim.keymap.set('x', '<leader>gB', ':GBrowse<CR>', { desc = 'Git Browse line selection in Github' })
 vim.keymap.set('x', '<leader>gb', ':GBrowse<CR>', { desc = 'Git Browse line selection in Github' })
 vim.keymap.set('n', '<leader>gp', ':PR<CR>', { desc = 'Git: Open PR in Github' })

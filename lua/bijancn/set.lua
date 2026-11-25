@@ -37,13 +37,23 @@ vim.opt.clipboard = "unnamed"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
--- Not yet released
--- vim.opt.foldtext = 'v:lua.vim.treesitter.foldtext()'
--- vim.opt.fillchars = { fold = " " }
 vim.opt.foldmethod = "expr"
 vim.opt.foldenable = false
 vim.opt.foldlevel = 99
-
--- set foldexpr=nvim_treesitter#foldexpr()
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
+-- Empty foldtext renders the folded line with its syntax highlighting
+-- (vim.treesitter.foldtext was removed in Nvim 0.12)
+vim.opt.foldtext = ""
+vim.opt.fillchars:append({ fold = " " })
+
+-- Disable remote-plugin providers that aren't used (silences :checkhealth)
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
+
+-- Make Go tools installed by go.nvim (gopls, goimports, ...) visible to nvim
+local gobin = vim.env.GOBIN or ((vim.env.GOPATH or (vim.env.HOME .. "/go")) .. "/bin")
+if vim.fn.isdirectory(gobin) == 1 and not vim.env.PATH:find(gobin, 1, true) then
+    vim.env.PATH = gobin .. ":" .. vim.env.PATH
+end
